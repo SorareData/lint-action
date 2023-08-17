@@ -106,6 +106,7 @@ async function runAction() {
 			}
 
 			if (linterAutoFix && commit) {
+				git.restoreNpmrc();
 				// Commit and push auto-fix changes
 				if (git.hasChanges()) {
 					git.commitChanges(commitMessage.replace(/\${linter}/g, linter.name), skipVerification);

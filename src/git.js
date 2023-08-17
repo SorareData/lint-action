@@ -48,6 +48,14 @@ function commitChanges(message, skipVerification) {
 }
 
 /**
+ * Restores the .npmrc file
+ */
+function restoreNpmrc() {
+	core.info(`Restoring .npmrc`);
+	run(`git restore .npmrc`);
+}
+
+/**
  * Returns the SHA of the head commit
  * @returns {string} - Head SHA
  */
@@ -95,4 +103,5 @@ module.exports = {
 	hasChanges,
 	pushChanges,
 	setUserInfo,
+	restoreNpmrc,
 };
