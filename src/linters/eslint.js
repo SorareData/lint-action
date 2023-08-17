@@ -43,12 +43,12 @@ class ESLint {
 	 * @param {string} prefix - Prefix to the lint command
 	 * @returns {{status: number, stdout: string, stderr: string}} - Output of the lint command
 	 */
-	static lint(dir, extensions, args = "", fix = false, prefix = "") {
+	static lint(dir, extensions, args = "", fix = false, prefix = "", filesToLint = ".") {
 		const extensionsArg = extensions.map((ext) => `.${ext}`).join(",");
 		const fixArg = fix ? "--fix" : "";
 		const commandPrefix = prefix || getNpmBinCommand(dir);
 		return run(
-			`${commandPrefix} eslint --ext ${extensionsArg} ${fixArg} --no-color --format json ${args} "."`,
+			`${commandPrefix} eslint --ext ${extensionsArg} ${fixArg} --no-color --format json ${args} ${filesToLint}`,
 			{
 				dir,
 				ignoreErrors: true,
