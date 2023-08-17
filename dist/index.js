@@ -7473,12 +7473,12 @@ class ESLint {
 	 * @param {string} prefix - Prefix to the lint command
 	 * @returns {{status: number, stdout: string, stderr: string}} - Output of the lint command
 	 */
-	static lint(dir, extensions, args = "", fix = false, prefix = "") {
+	static lint(dir, extensions, args = "", fix = false, prefix = "", filesToLint = ".") {
 		const extensionsArg = extensions.map((ext) => `.${ext}`).join(",");
 		const fixArg = fix ? "--fix" : "";
 		const commandPrefix = prefix || getNpmBinCommand(dir);
 		return run(
-			`${commandPrefix} eslint --ext ${extensionsArg} ${fixArg} --no-color --format json ${args} "."`,
+			`${commandPrefix} eslint --ext ${extensionsArg} ${fixArg} --no-color --format json ${args} ${filesToLint}`,
 			{
 				dir,
 				ignoreErrors: true,
@@ -10617,6 +10617,7 @@ async function runAction() {
 			const prefix = core.getInput(`${linterId}_command_prefix`);
 			const lintDirAbs = join(context.workspace, lintDirRel);
 			const linterAutoFix = autoFix && core.getInput(`${linterId}_auto_fix`) === "true";
+			const filesToLint = core.getInput(`${linterId}_files_to_lint` || ".");
 
 			if (!existsSync(lintDirAbs)) {
 				throw new Error(`Directory ${lintDirAbs} for ${linter.name} doesn't exist`);
@@ -10636,7 +10637,7 @@ async function runAction() {
 				`Linting ${linterAutoFix ? "and auto-fixing " : ""}files in ${lintDirAbs} ` +
 					`with ${linter.name} ${args ? `and args: ${args}` : ""}…`,
 			);
-			const lintOutput = linter.lint(lintDirAbs, fileExtList, args, linterAutoFix, prefix);
+			const lintOutput = linter.lint(lintDirAbs, fileExtList, args, linterAutoFix, prefix, filesToLint);
 
 			// Parse output of linting command
 			const lintResult = linter.parseOutput(context.workspace, lintOutput);
